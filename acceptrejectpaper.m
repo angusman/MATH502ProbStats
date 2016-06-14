@@ -24,7 +24,19 @@
 
 
 %% Break down of function code
-% review the function block by block
+% We provide two functions in this paper, acceptReject.m and
+% acceptRejectPlot.m with the following outputs and arguments:
+% [X,Y] = acceptReject(f,a,b,n)
+%%
+% * [X,Y], random numbers defined as above
+% * f, PDF function $f_X$
+% * a, lower bound of f's range
+% * b, upper bound of f's range
+% * n, number of $(x_i, y_i)$ pairs (increase this for higher accuracy)
+%%
+% acceptRejectPlot(fun,a,b,Xc)
+%% * 
+
 
 %% Examples
 % Lets do the beta and someother unhappy distribution
