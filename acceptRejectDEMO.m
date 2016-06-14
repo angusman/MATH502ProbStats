@@ -36,10 +36,10 @@ x = linspace(a,b,200);              % domain for actual density
 plot(x,f(x),'k--','LineWidth',2);   % plot actual density
 title(wait);
 for i = 1:20
-    pause
+    pause(.1)
     p = plot(T(i),U(i)*M(T(i)),'ko');
     title(['Trial #' num2str(i)]);
-    pause
+    pause(.1)
     if ACCEPT(i) == 0
         set(p,'Color','r','Marker','x');
         title('Reject...');
@@ -49,7 +49,7 @@ for i = 1:20
     end
 end
 title('Let''s end this...'); 
-pause
+pause(.1)
 run = 1; i = 20;
 while run
     i = i+1;
@@ -67,7 +67,7 @@ while run
     end
 end
 title('Much, much later...');
-pause
+pause(.1)
 title('Some trial results');
 
 % Plot all the trial results
@@ -77,7 +77,7 @@ plot(T(ACCEPT),U(ACCEPT).*M(T(ACCEPT)),'b+');
 plot(T(~ACCEPT),U(~ACCEPT).*M(T(~ACCEPT)),'rx');
 
 title('Now... I''ll count the accepted.');
-pause
+pause(.1)
 title('All the trial results');
 
 % Plot the approximate and actual density.
