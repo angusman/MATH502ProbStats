@@ -1,0 +1,262 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>acceptRejectDEMO</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-06-14"><meta name="DC.source" content="acceptRejectDEMO.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Accept / Reject Method DEMO</a></li><li><a href="#2">Plotting</a></li></ul></div><h2>Accept / Reject Method DEMO<a name="1"></a></h2><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+
+<span class="comment">% Settings.</span>
+n = 1e4;                        <span class="comment">% number of trials</span>
+
+S = [-1, 1];                    <span class="comment">% support (domain of nonzero values)</span>
+a = S(1); b = S(end);           <span class="comment">% interval endpoints</span>
+
+g = @(x) 6 * x.^2 .* (1-x).^2;  <span class="comment">% density function</span>
+B = @(x) 24 + (x-x);             <span class="comment">% bounding function (constant)</span>
+
+<span class="comment">% Scale set functions to appropriate size (optional).</span>
+I = integral(g,a,b);
+f = @(x) (1/I)*g(x);
+M = @(x) (1/I)*B(x);
+
+<span class="comment">% Initialize random variables for n trials.</span>
+T = (b-a)*rand(1,n)+a;          <span class="comment">% x-value uniform distribution on S</span>
+U = rand(1,n);                  <span class="comment">% y-scale factor uniform distribution</span>
+
+<span class="comment">% Test criteria.</span>
+ACCEPT = [ U .* M(T) &lt;= f(T) ]; <span class="comment">% logic array (0 if reject, 1 if accept)</span>
+X = T(ACCEPT);                  <span class="comment">% set X = T if accepted</span>
+
+nACCEPT = sum(ACCEPT);          <span class="comment">% count how many we accepted (stats)</span>
+pACCEPT = nACCEPT/n;            <span class="comment">% percentage accepted (stats)</span>
+</pre><h2>Plotting<a name="2"></a></h2><p>Plot the choosing process...</p><pre class="codeinput">figure(1)
+hold <span class="string">on</span>
+wait = <span class="string">'Ready for trials...'</span>;
+
+x = linspace(a,b,200);              <span class="comment">% domain for actual density</span>
+plot(x,f(x),<span class="string">'k--'</span>,<span class="string">'LineWidth'</span>,2);   <span class="comment">% plot actual density</span>
+title(wait);
+<span class="keyword">for</span> i = 1:20
+    pause(.1)
+    p = plot(T(i),U(i)*M(T(i)),<span class="string">'ko'</span>);
+    title([<span class="string">'Trial #'</span> num2str(i)]);
+    pause(.1)
+    <span class="keyword">if</span> ACCEPT(i) == 0
+        set(p,<span class="string">'Color'</span>,<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'x'</span>);
+        title(<span class="string">'Reject...'</span>);
+    <span class="keyword">else</span>
+        set(p,<span class="string">'Color'</span>,<span class="string">'b'</span>,<span class="string">'Marker'</span>,<span class="string">'+'</span>);
+        title(<span class="string">'Accept!'</span>);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+title(<span class="string">'Let''s end this...'</span>);
+pause(.1)
+run = 1; i = 20;
+<span class="keyword">while</span> run
+    i = i+1;
+    pause(.001)
+    p = plot(T(i),U(i)*M(T(i)),<span class="string">'ko'</span>);
+<span class="comment">%     title(['Trial #' num2str(i)]);</span>
+    pause(.001)
+    <span class="keyword">if</span> ACCEPT(i) == 0
+        set(p,<span class="string">'Color'</span>,<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'x'</span>);
+    <span class="keyword">else</span>
+        set(p,<span class="string">'Color'</span>,<span class="string">'b'</span>,<span class="string">'Marker'</span>,<span class="string">'+'</span>);
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> i == min(300,n)
+        run = 0;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+title(<span class="string">'Much, much later...'</span>);
+pause(.1)
+title(<span class="string">'Some trial results'</span>);
+
+<span class="comment">% Plot all the trial results</span>
+figure(2)
+hold <span class="string">on</span>
+plot(T(ACCEPT),U(ACCEPT).*M(T(ACCEPT)),<span class="string">'b+'</span>);
+plot(T(~ACCEPT),U(~ACCEPT).*M(T(~ACCEPT)),<span class="string">'rx'</span>);
+
+title(<span class="string">'Now... I''ll count the accepted.'</span>);
+pause(.1)
+title(<span class="string">'All the trial results'</span>);
+
+<span class="comment">% Plot the approximate and actual density.</span>
+figure(3)
+m = 50;                                 <span class="comment">% number of bins</span>
+EDGES = linspace(a,b,m);                <span class="comment">% define bins for histogram</span>
+FREQ = histc(X,EDGES);                  <span class="comment">% report frequency in each bin</span>
+A = nACCEPT*(b-a)/(m-1);                <span class="comment">% 'area' of histogram</span>
+approx = bar(EDGES,FREQ/A,<span class="string">'histc'</span>);     <span class="comment">% plot approximate density</span>
+
+hold <span class="string">on</span>
+
+x = linspace(a,b,200);              <span class="comment">% domain for actual density</span>
+plot(x,f(x),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2);   <span class="comment">% plot actual density</span>
+
+xlabel(<span class="string">'x'</span>); ylabel(<span class="string">'f(x)'</span>); title(<span class="string">'Accept/Reject Method'</span>);
+set(approx,<span class="string">'FaceColor'</span>,[1 1 1],<span class="string">'LineWidth'</span>,2);
+</pre><img vspace="5" hspace="5" src="acceptRejectDEMO_01.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="acceptRejectDEMO_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="acceptRejectDEMO_03.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Accept / Reject Method DEMO
+clear all; close all;
+
+% Settings.
+n = 1e4;                        % number of trials
+
+S = [-1, 1];                    % support (domain of nonzero values)
+a = S(1); b = S(end);           % interval endpoints
+
+g = @(x) 6 * x.^2 .* (1-x).^2;  % density function
+B = @(x) 24 + (x-x);             % bounding function (constant)
+
+% Scale set functions to appropriate size (optional).
+I = integral(g,a,b); 
+f = @(x) (1/I)*g(x);
+M = @(x) (1/I)*B(x);
+
+% Initialize random variables for n trials.
+T = (b-a)*rand(1,n)+a;          % x-value uniform distribution on S
+U = rand(1,n);                  % y-scale factor uniform distribution
+
+% Test criteria.
+ACCEPT = [ U .* M(T) <= f(T) ]; % logic array (0 if reject, 1 if accept)
+X = T(ACCEPT);                  % set X = T if accepted
+
+nACCEPT = sum(ACCEPT);          % count how many we accepted (stats)
+pACCEPT = nACCEPT/n;            % percentage accepted (stats)
+
+%% Plotting
+% Plot the choosing process...
+figure(1)
+hold on
+wait = 'Ready for trials...';
+
+x = linspace(a,b,200);              % domain for actual density
+plot(x,f(x),'kREPLACE_WITH_DASH_DASH','LineWidth',2);   % plot actual density
+title(wait);
+for i = 1:20
+    pause(.1)
+    p = plot(T(i),U(i)*M(T(i)),'ko');
+    title(['Trial #' num2str(i)]);
+    pause(.1)
+    if ACCEPT(i) == 0
+        set(p,'Color','r','Marker','x');
+        title('Reject...');
+    else
+        set(p,'Color','b','Marker','+');
+        title('Accept!');
+    end
+end
+title('Let''s end this...'); 
+pause(.1)
+run = 1; i = 20;
+while run
+    i = i+1;
+    pause(.001)
+    p = plot(T(i),U(i)*M(T(i)),'ko');
+%     title(['Trial #' num2str(i)]);
+    pause(.001)
+    if ACCEPT(i) == 0
+        set(p,'Color','r','Marker','x');
+    else
+        set(p,'Color','b','Marker','+');
+    end
+    if i == min(300,n)
+        run = 0;
+    end
+end
+title('Much, much later...');
+pause(.1)
+title('Some trial results');
+
+% Plot all the trial results
+figure(2)
+hold on
+plot(T(ACCEPT),U(ACCEPT).*M(T(ACCEPT)),'b+');
+plot(T(~ACCEPT),U(~ACCEPT).*M(T(~ACCEPT)),'rx');
+
+title('Now... I''ll count the accepted.');
+pause(.1)
+title('All the trial results');
+
+% Plot the approximate and actual density.
+figure(3)
+m = 50;                                 % number of bins
+EDGES = linspace(a,b,m);                % define bins for histogram
+FREQ = histc(X,EDGES);                  % report frequency in each bin
+A = nACCEPT*(b-a)/(m-1);                % 'area' of histogram
+approx = bar(EDGES,FREQ/A,'histc');     % plot approximate density
+
+hold on
+
+x = linspace(a,b,200);              % domain for actual density
+plot(x,f(x),'rREPLACE_WITH_DASH_DASH','LineWidth',2);   % plot actual density
+    
+xlabel('x'); ylabel('f(x)'); title('Accept/Reject Method');
+set(approx,'FaceColor',[1 1 1],'LineWidth',2);
+##### SOURCE END #####
+--></body></html>
