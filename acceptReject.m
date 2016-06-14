@@ -1,44 +1,31 @@
-%% Accept / Reject Method
-clear all; close all;
+function [Xc,Yc] = acceptReject(fun,a,b,n)
+% ACCEPTREJECT  Simulates random variables with scaled density.
+%
+%   Example:
+%       f = @(x) 6 * x.^2 .* (1-x).^2;
+%       [X,Y] = acceptReject(f, -1, 1, 1e4);
+%
+%       This takes function f, left and right endpoints a = -1, b = 1
+%       with n = 1e4 trials; returns cell arrays X and Y. The first rows 
+%       X{1,:} and Y{1,:} contain the accepted x- and y-values,
+%       respectively. The second rows X{2,:} and Y{2,:} contain the
+%       rejected values.
 
-% Settings.
-n = 1e4;                        % number of trials
-
-S = [-1, 1];                    % support (domain of nonzero values)
-a = S(1); b = S(end);           % interval endpoints
-
-g = @(x) 6 * x.^2 .* (1-x).^2;  % density function
-B = @(x) 24 + (x-x);             % bounding function (constant)
-
-% Scale set functions to appropriate size (optional).
-I = integral(g,a,b); 
-f = @(x) (1/I)*g(x);
-M = @(x) (1/I)*B(x);
+% Scale density function to appropriate size.
+I = integral(fun,a,b); 
+f = @(x) (1/I)*fun(x);
+c = abs(min([-f(a),-f(b),fminbnd(@(x) -f(x),a,b)]));     % locate maximum
+M = @(x) c + (x-x);
 
 % Initialize random variables for n trials.
 T = (b-a)*rand(1,n)+a;          % x-value uniform distribution on S
 U = rand(1,n);                  % y-scale factor uniform distribution
 
 % Test criteria.
-ACCEPT = [ U .* M(T) <= f(T) ]; % logic array (0 if reject, 1 if accept)
-X = T(ACCEPT);                  % set X = T if accepted
+TEST = [ U .* M(T) <= f(T) ];     % logic array (0 if reject, 1 if accept)
 
-nACCEPT = sum(ACCEPT);          % count how many we accepted (stats)
-pACCEPT = nACCEPT/n;            % percentage accepted (stats)
-
-% Plot the approximate and actual density.
-figure(1)
-
-m = 50;                                 % number of bins
-EDGES = linspace(a,b,m);                % define bins for histogram
-FREQ = histc(X,EDGES);                  % report frequency in each bin
-A = nACCEPT*(b-a)/(m-1);                % 'area' of histogram
-approx = bar(EDGES,FREQ/A,'histc');     % plot approximate density
-
-hold on
-
-x = linspace(a,b,200);              % domain for actual density
-plot(x,f(x),'r--','LineWidth',2);   % plot actual density
-    
-xlabel('x'); ylabel('f(x)'); title('Accept/Reject Method');
-set(approx,'FaceColor',[1 1 1],'LineWidth',2);
+Xc = {T(TEST); ...       % row 1 <- accepted X values
+      T(~TEST)};         % row 2 <- rejected X values
+                              
+Yc = {U(TEST).*c; ...    % row 1 <- accepted Y values
+      U(~TEST).*c};      % row 2 <- rejected Y values           
