@@ -59,7 +59,30 @@
 % <include>acceptRejectPlot.m</include>
 
 
-%% Examples
-% Lets do the beta and someother unhappy distribution
+%% Example with the Beta Density
+% Lets take a look at how these functions work using the beta density with
+% a = 6 and b = 2
+% 
+%%
+% setting up a, b and beta(u)
+a = 6;
+b = 2;
+beta = @(u) gamma(a+b)/(gamma(a)*gamma(b)) * u.^(a-1) .* (1-u).^(b-1);
 
-%% Full function code
+%%
+% Plotting to see the pdf
+
+x = linspace(0,1,1000);
+
+figure
+hold on
+title('The Beta Density with a = 6, b = 2')
+plot(x,beta(x))
+xlabel('u')
+ylabel('f(u)')
+hold off
+%%
+% Now lets test out the functions for 10,000 points
+[Xc, Yc] = acceptReject(beta,0,1,10000);
+
+acceptRejectPlot(beta,0,1,Xc,Yc);
