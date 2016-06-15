@@ -1,7 +1,7 @@
 % acceptRejectRoutine
-clear all
-f = @(x) 6*x.^2 .*(1-x).^2;
-a = -1; b = 1; n = 1e4;
+clear all; close all
+f = @(x) 0.5^2.75 / gamma(2.75) * x.^(1.75) .* exp(-0.5*x);
+a = 0; b = 15; n = 1e5;
 
 [X,Y] = acceptReject(f,a,b,n);
-acceptRejectPlot(f,a,b,X)
+acceptRejectPlot(f,a,b,X,Y)

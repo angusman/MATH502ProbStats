@@ -14,7 +14,7 @@ function [Xc,Yc] = acceptReject(fun,a,b,n)
 % Scale density function to appropriate size.
 I = integral(fun,a,b); 
 f = @(x) (1/I)*fun(x);
-c = abs(min([-f(a),-f(b),fminbnd(@(x) -f(x),a,b)]));     % locate maximum
+c = max([f(a),f(b),f(fminbnd(@(x) -f(x),a,b))]);     % locate maximum
 M = @(x) c + (x-x);
 
 % Initialize random variables for n trials.
@@ -28,4 +28,4 @@ Xc = {T(TEST); ...       % row 1 <- accepted X values
       T(~TEST)};         % row 2 <- rejected X values
                               
 Yc = {U(TEST).*c; ...    % row 1 <- accepted Y values
-      U(~TEST).*c};      % row 2 <- rejected Y values           
+      U(~TEST).*c};      % row 2 <- rejected Y values  
