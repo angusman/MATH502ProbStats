@@ -37,19 +37,18 @@
 % * b, upper bound of f's domain
 % * n, number of $(x_i, y_i)$ pairs (increase this for higher accuracy)
 %%
-% |acceptRejectPlot(fun,a,b,X,Y)|
+% acceptRejectPlot(fun,a,b,Xc,Yc)
 %%
-% * *Output:* plots, one of the pdf with a histogram of the accepted values
-% generated and one of the pdf along with accepted and rejected points.
+% * *Output:* plots, one of the pdf with a histogram of the accepted number
+% generated and one of the pdf along with all accepted and rejected points.
 % * *Input:* fun, PDF function $f_X$
-% * a, lower bound of fun's domain
-% * b, upper bound of fun's domain
-% * X, the X returned by |acceptReject|
-% * Y, the Y returned by |acceptReject|
+% * a, lower bound of fun's range
+% * b, upper bound of fun's range
+% * Xc, the X returned by acceptReject
+% * Yc, the Y returned by acceptReject
 %% Accept Reject and Plotter function code
 % here is the full code of both functions with comments and syntax high
 % lighting:
-%%
 % *acceptReject.m*
 %%
 % <include>acceptReject.m</include>
