@@ -15,8 +15,8 @@
 %%
 % # Given a probability density function (*PDF*) $f_X$ of a random
 % variable $X$ with compact support find its maximum over its range (call it $c$).
-% # Generate a pair of random numbers $(X,Y)$ such that $X \sim U[$ support
-% of $f_X]$ and $Y \sim U[0,c]$.
+% # Generate a pair of random numbers $(X,Y)$ such that $X \sim U[support$  
+% $of f_X]$ and $Y \sim U[0,c]$.
 % # For each point $(x_i, y_i)$ if $0 \leq y_i \leq f_X(x_i)$ then it is
 % "accepted" otherwise it is "rejected."
 %%
@@ -28,10 +28,10 @@
 % We provide two functions in this paper, |acceptReject.m| and
 % |acceptRejectPlot.m| with the following outputs and arguments:
 %%
-% |[X,Y] = acceptReject(f,a,b,n)|
+% |[Xc,Yc] = acceptReject(f,a,b,n)|
 %%
 % * *Output:* [X,Y], random numbers defined as above each split into a cell with the first
-% row as the accepted values and the second row as the rejected values
+% row as the accepted values and the second row as the rejected values.
 % * *Input:* f, PDF function $f_X$
 % * a, lower bound of f's domain
 % * b, upper bound of f's domain
@@ -86,3 +86,8 @@ hold off
 [Xc, Yc] = acceptReject(beta,0,1,10000);
 
 acceptRejectPlot(beta,0,1,Xc,Yc);
+
+%%
+% To get the pseudo random numbers generated from acceptReject use the
+% following:
+xrandom = Xc{1,:};

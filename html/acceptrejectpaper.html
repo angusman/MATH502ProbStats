@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Introduction</a></li><li><a href="#2">Overview of Method</a></li><li><a href="#5">The Functions</a></li><li><a href="#10">Accept Reject and Plotter function code</a></li><li><a href="#15">Example with the Beta Density</a></li></ul></div><h2>Introduction<a name="1"></a></h2><p>The process of generating pseudo random numbers using a given density function of a random variable is easy if the inverse of the CDF is known or quick to find. However, the general method breaks down when there does not exist a happy way to find the inverse of the CDF. This is why we will be exploring something called the <i>Acceptance-Rejection Method</i>.</p><h2>Overview of Method<a name="2"></a></h2><p>The Acceptance-Rejection Method is actually quite simple. We implement the method with our <tt>acceptReject</tt> function as described in plain English below:</p><div><ol><li>Given a probability density function (<b>PDF</b>) <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"> of a random variable <img src="acceptrejectpaper_eq12362013959998143435.png" alt="$X$" style="width:10px;height:8px;"> with compact support find its maximum over its range (call it <img src="acceptrejectpaper_eq08422257486649890878.png" alt="$c$" style="width:5px;height:6px;">).</li><li>Generate a pair of random numbers <img src="acceptrejectpaper_eq06231131383388592156.png" alt="$(X,Y)$" style="width:30px;height:11px;"> such that <img src="acceptrejectpaper_eq03091425041589847698.png" alt="$X \sim U[$" style="width:37px;height:11px;"> support of <img src="acceptrejectpaper_eq06285382412691884634.png" alt="$f_X]$" style="width:15px;height:11px;"> and <img src="acceptrejectpaper_eq03950716211456593365.png" alt="$Y \sim U[0,c]$" style="width:52px;height:11px;">.</li><li>For each point <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> if <img src="acceptrejectpaper_eq02308370214946385103.png" alt="$0 \leq y_i \leq f_X(x_i)$" style="width:74px;height:11px;"> then it is "accepted" otherwise it is "rejected."</li></ol></div><p>As you can see this is essentially the same process used in Monte-Carlo integration.</p><h2>The Functions<a name="5"></a></h2><p>We provide two functions in this paper, <tt>acceptReject.m</tt> and <tt>acceptRejectPlot.m</tt> with the following outputs and arguments:</p><p><tt>[X,Y] = acceptReject(f,a,b,n)</tt></p><div><ul><li><b>Output:</b> [X,Y], random numbers defined as above each split into a cell with the first row as the accepted values and the second row as the rejected values</li><li><b>Input:</b> f, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of f's domain</li><li>b, upper bound of f's domain</li><li>n, number of <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> pairs (increase this for higher accuracy)</li></ul></div><p><tt>acceptRejectPlot(fun,a,b,X,Y)</tt></p><div><ul><li><b>Output:</b> plots, one of the pdf with a histogram of the accepted values generated and one of the pdf along with accepted and rejected points.</li><li><b>Input:</b> fun, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of fun's domain</li><li>b, upper bound of fun's domain</li><li>X, the X returned by <tt>acceptReject</tt></li><li>Y, the Y returned by <tt>acceptReject</tt></li></ul></div><h2>Accept Reject and Plotter function code<a name="10"></a></h2><p>here is the full code of both functions with comments and syntax high lighting:</p><p><b>acceptReject.m</b></p><pre class="language-matlab">
+  </style></head><body><div class="content"><h1>The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Introduction</a></li><li><a href="#2">Overview of Method</a></li><li><a href="#5">The Functions</a></li><li><a href="#10">Accept Reject and Plotter function code</a></li><li><a href="#15">Example with the Beta Density</a></li></ul></div><h2>Introduction<a name="1"></a></h2><p>The process of generating pseudo random numbers using a given density function of a random variable is easy if the inverse of the CDF is known or quick to find. However, the general method breaks down when there does not exist a happy way to find the inverse of the CDF. This is why we will be exploring something called the <i>Acceptance-Rejection Method</i>.</p><h2>Overview of Method<a name="2"></a></h2><p>The Acceptance-Rejection Method is actually quite simple. We implement the method with our <tt>acceptReject</tt> function as described in plain English below:</p><div><ol><li>Given a probability density function (<b>PDF</b>) <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"> of a random variable <img src="acceptrejectpaper_eq12362013959998143435.png" alt="$X$" style="width:10px;height:8px;"> with compact support find its maximum over its range (call it <img src="acceptrejectpaper_eq08422257486649890878.png" alt="$c$" style="width:5px;height:6px;">).</li><li>Generate a pair of random numbers <img src="acceptrejectpaper_eq06231131383388592156.png" alt="$(X,Y)$" style="width:30px;height:11px;"> such that <img src="acceptrejectpaper_eq00873894944671153423.png" alt="$X \sim U[support$" style="width:73px;height:11px;"> <img src="acceptrejectpaper_eq03248494749898355382.png" alt="$of f_X]$" style="width:27px;height:11px;"> and <img src="acceptrejectpaper_eq03950716211456593365.png" alt="$Y \sim U[0,c]$" style="width:52px;height:11px;">.</li><li>For each point <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> if <img src="acceptrejectpaper_eq02308370214946385103.png" alt="$0 \leq y_i \leq f_X(x_i)$" style="width:74px;height:11px;"> then it is "accepted" otherwise it is "rejected."</li></ol></div><p>As you can see this is essentially the same process used in Monte-Carlo integration.</p><h2>The Functions<a name="5"></a></h2><p>We provide two functions in this paper, <tt>acceptReject.m</tt> and <tt>acceptRejectPlot.m</tt> with the following outputs and arguments:</p><p><tt>[Xc,Yc] = acceptReject(f,a,b,n)</tt></p><div><ul><li><b>Output:</b> [X,Y], random numbers defined as above each split into a cell with the first row as the accepted values and the second row as the rejected values.</li><li><b>Input:</b> f, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of f's domain</li><li>b, upper bound of f's domain</li><li>n, number of <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> pairs (increase this for higher accuracy)</li></ul></div><p><tt>acceptRejectPlot(fun,a,b,X,Y)</tt></p><div><ul><li><b>Output:</b> plots, one of the pdf with a histogram of the accepted values generated and one of the pdf along with accepted and rejected points.</li><li><b>Input:</b> fun, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of fun's domain</li><li>b, upper bound of fun's domain</li><li>X, the X returned by <tt>acceptReject</tt></li><li>Y, the Y returned by <tt>acceptReject</tt></li></ul></div><h2>Accept Reject and Plotter function code<a name="10"></a></h2><p>here is the full code of both functions with comments and syntax high lighting:</p><p><b>acceptReject.m</b></p><pre class="language-matlab">
 <span class="keyword">function</span> [Xc,Yc] = acceptReject(fun,a,b,n)
 <span class="comment">% ACCEPTREJECT  Simulates random variables with scaled density.</span>
 <span class="comment">%</span>
@@ -171,7 +171,8 @@ hold <span class="string">off</span>
 </pre><img vspace="5" hspace="5" src="acceptrejectpaper_01.png" style="width:560px;height:420px;" alt=""> <p>Now lets test out the functions for 10,000 points</p><pre class="codeinput">[Xc, Yc] = acceptReject(beta,0,1,10000);
 
 acceptRejectPlot(beta,0,1,Xc,Yc);
-</pre><img vspace="5" hspace="5" src="acceptrejectpaper_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="acceptrejectpaper_03.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="acceptrejectpaper_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="acceptrejectpaper_03.png" style="width:560px;height:420px;" alt=""> <p>To get the pseudo random numbers generated from acceptReject use the following:</p><pre class="codeinput">xrandom = Xc{1,:};
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan
 
@@ -190,8 +191,8 @@ acceptRejectPlot(beta,0,1,Xc,Yc);
 %%
 % # Given a probability density function (*PDF*) $f_X$ of a random
 % variable $X$ with compact support find its maximum over its range (call it $c$).
-% # Generate a pair of random numbers $(X,Y)$ such that $X \sim U[$ support
-% of $f_X]$ and $Y \sim U[0,c]$.
+% # Generate a pair of random numbers $(X,Y)$ such that $X \sim U[support$  
+% $of f_X]$ and $Y \sim U[0,c]$.
 % # For each point $(x_i, y_i)$ if $0 \leq y_i \leq f_X(x_i)$ then it is
 % "accepted" otherwise it is "rejected."
 %%
@@ -203,10 +204,10 @@ acceptRejectPlot(beta,0,1,Xc,Yc);
 % We provide two functions in this paper, |acceptReject.m| and
 % |acceptRejectPlot.m| with the following outputs and arguments:
 %%
-% |[X,Y] = acceptReject(f,a,b,n)|
+% |[Xc,Yc] = acceptReject(f,a,b,n)|
 %%
 % * *Output:* [X,Y], random numbers defined as above each split into a cell with the first
-% row as the accepted values and the second row as the rejected values
+% row as the accepted values and the second row as the rejected values.
 % * *Input:* f, PDF function $f_X$
 % * a, lower bound of f's domain
 % * b, upper bound of f's domain
@@ -261,6 +262,11 @@ hold off
 [Xc, Yc] = acceptReject(beta,0,1,10000);
 
 acceptRejectPlot(beta,0,1,Xc,Yc);
+
+%%
+% To get the pseudo random numbers generated from acceptReject use the
+% following:
+xrandom = Xc{1,:};
 
 ##### SOURCE END #####
 --></body></html>
