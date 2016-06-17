@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-06-14"><meta name="DC.source" content="acceptrejectpaper.m"><style type="text/css">
+      --><title>The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-06-17"><meta name="DC.source" content="acceptrejectpaper.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,19 +66,33 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Introduction</a></li><li><a href="#2">Overview of Method</a></li><li><a href="#5">The Functions</a></li><li><a href="#10">Accept Reject and Plotter function code</a></li><li><a href="#15">Example with the Beta Density</a></li></ul></div><h2>Introduction<a name="1"></a></h2><p>The process of generating pseudo random numbers using a given density function of a random variable is easy if the inverse of the CDF is known or quick to find. However, the general method breaks down when there does not exist a happy way to find the inverse of the CDF. This is why we will be exploring something called the <i>Acceptance-Rejection Method</i>.</p><h2>Overview of Method<a name="2"></a></h2><p>The Acceptance-Rejection Method is actually quite simple. We implement the method with our <tt>acceptReject</tt> function as described in plain English below:</p><div><ol><li>Given a probability density function (<b>PDF</b>) <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"> of a random variable <img src="acceptrejectpaper_eq12362013959998143435.png" alt="$X$" style="width:10px;height:8px;"> with compact support find its maximum over its range (call it <img src="acceptrejectpaper_eq08422257486649890878.png" alt="$c$" style="width:5px;height:6px;">).</li><li>Generate a pair of random numbers <img src="acceptrejectpaper_eq06231131383388592156.png" alt="$(X,Y)$" style="width:30px;height:11px;"> such that <img src="acceptrejectpaper_eq00873894944671153423.png" alt="$X \sim U[support$" style="width:73px;height:11px;"> <img src="acceptrejectpaper_eq03248494749898355382.png" alt="$of f_X]$" style="width:27px;height:11px;"> and <img src="acceptrejectpaper_eq03950716211456593365.png" alt="$Y \sim U[0,c]$" style="width:52px;height:11px;">.</li><li>For each point <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> if <img src="acceptrejectpaper_eq02308370214946385103.png" alt="$0 \leq y_i \leq f_X(x_i)$" style="width:74px;height:11px;"> then it is "accepted" otherwise it is "rejected."</li></ol></div><p>As you can see this is essentially the same process used in Monte-Carlo integration.</p><h2>The Functions<a name="5"></a></h2><p>We provide two functions in this paper, <tt>acceptReject.m</tt> and <tt>acceptRejectPlot.m</tt> with the following outputs and arguments:</p><p><tt>[Xc,Yc] = acceptReject(f,a,b,n)</tt></p><div><ul><li><b>Output:</b> [X,Y], random numbers defined as above each split into a cell with the first row as the accepted values and the second row as the rejected values.</li><li><b>Input:</b> f, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of f's domain</li><li>b, upper bound of f's domain</li><li>n, number of <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> pairs (increase this for higher accuracy)</li></ul></div><p><tt>acceptRejectPlot(fun,a,b,X,Y)</tt></p><div><ul><li><b>Output:</b> plots, one of the pdf with a histogram of the accepted values generated and one of the pdf along with accepted and rejected points.</li><li><b>Input:</b> fun, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of fun's domain</li><li>b, upper bound of fun's domain</li><li>X, the X returned by <tt>acceptReject</tt></li><li>Y, the Y returned by <tt>acceptReject</tt></li></ul></div><h2>Accept Reject and Plotter function code<a name="10"></a></h2><p>here is the full code of both functions with comments and syntax high lighting:</p><p><b>acceptReject.m</b></p><pre class="language-matlab">
-<span class="keyword">function</span> [Xc,Yc] = acceptReject(fun,a,b,n)
-<span class="comment">% ACCEPTREJECT  Simulates random variables with scaled density.</span>
+  </style></head><body><div class="content"><h1>The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Introduction</a></li><li><a href="#2">Overview of Method</a></li><li><a href="#5">The Functions</a></li><li><a href="#12">Accept Reject and Plotter function code</a></li><li><a href="#19">Example of the inside work with the Beta Density</a></li><li><a href="#23">Example 10000 points with density of the Beta distribution</a></li></ul></div><h2>Introduction<a name="1"></a></h2><p>The process of generating pseudo random numbers using a given density function of a random variable is easy if the inverse of the CDF is known or quick to find. However, the general method breaks down when there does not exist a happy way to find the inverse of the CDF. This is why we will be exploring something called the <i>Acceptance-Rejection Method</i>.</p><h2>Overview of Method<a name="2"></a></h2><p>The Acceptance-Rejection Method is actually quite simple. We implement the method with our <tt>acceptReject</tt> function as described in plain English below:</p><div><ol><li>Given a probability density function (<b>PDF</b>) <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"> of a random variable <img src="acceptrejectpaper_eq12362013959998143435.png" alt="$X$" style="width:10px;height:8px;"> with compact support find its maximum over its range (call it <img src="acceptrejectpaper_eq08422257486649890878.png" alt="$c$" style="width:5px;height:6px;">).</li><li>Generate a pair of random numbers <img src="acceptrejectpaper_eq06231131383388592156.png" alt="$(X,Y)$" style="width:30px;height:11px;"> such that <img src="acceptrejectpaper_eq00873894944671153423.png" alt="$X \sim U[support$" style="width:73px;height:11px;"> <img src="acceptrejectpaper_eq03248494749898355382.png" alt="$of f_X]$" style="width:27px;height:11px;"> and <img src="acceptrejectpaper_eq03950716211456593365.png" alt="$Y \sim U[0,c]$" style="width:52px;height:11px;">.</li><li>For each point <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> if <img src="acceptrejectpaper_eq02308370214946385103.png" alt="$0 \leq y_i \leq f_X(x_i)$" style="width:74px;height:11px;"> then it is "accepted" otherwise it is "rejected."</li></ol></div><p>As you can see this is essentially the same process used in Monte-Carlo integration.</p><h2>The Functions<a name="5"></a></h2><p>We provide three functions in this paper, <tt>acceptReject.m</tt>, <tt>acceptRejectPlot.m</tt> and <tt>randPDF.m</tt> with the following outputs and arguments:</p><p><tt>[A,varargout] = acceptReject(fun,a,b,n,varargin)</tt></p><div><ul><li><b>Output:</b> numerical array A containing the accepted X-values (i.e., the values of the random variable with  density function f).</li><li><b>Input:</b> fun, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of fun's domain</li><li>b, upper bound of fun's domain</li><li>n, number of <img src="acceptrejectpaper_eq01142016630197873102.png" alt="$(x_i, y_i)$" style="width:30px;height:11px;"> pairs (increase this for higher accuracy)</li><li>The optional input string 'plot' returns a histogram comparing the produced values with the actual user-specified density.</li></ul></div><p><tt>acceptRejectPlot(fun,a,b,Xc,Yc)</tt></p><div><ul><li><b>Output:</b> plots, one of the pdf with a histogram of the accepted values generated and one of the pdf along with accepted and rejected points.</li><li><b>Input:</b> fun, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of fun's domain</li><li>b, upper bound of fun's domain</li><li>X, the X returned by <tt>acceptReject</tt></li><li>Y, the Y returned by <tt>acceptReject</tt> <b>Note:</b> This will have little use aside from its call by <tt>acceptReject.m</tt></li></ul></div><p><tt>[x] = randPDF( fun, a, b, n)</tt></p><div><ul><li><b>Output:</b> a 1xn vector of random values with density provided by fun</li><li><b>Input:</b> fun, PDF function <img src="acceptrejectpaper_eq11824279353176583941.png" alt="$f_X$" style="width:12px;height:10px;"></li><li>a, lower bound of fun's domain</li><li>b, upper bound of fun's domain</li></ul></div><h2>Accept Reject and Plotter function code<a name="12"></a></h2><p>here is the full code of all functions with comments and syntax high lighting:</p><p><b>acceptReject.m</b></p><pre class="language-matlab">
+<span class="keyword">function</span> [A,varargout] = acceptReject(fun,a,b,n,varargin)
+<span class="comment">% ACCEPTREJECT  Produces random variables with accept/reject method.</span>
 <span class="comment">%</span>
-<span class="comment">%   Example:</span>
+<span class="comment">%   Examples:</span>
 <span class="comment">%       f = @(x) 6 * x.^2 .* (1-x).^2;</span>
-<span class="comment">%       [X,Y] = acceptReject(f, -1, 1, 1e4);</span>
+<span class="comment">%       A = acceptReject(f, -1, 1, 1e4);</span>
 <span class="comment">%</span>
 <span class="comment">%       This takes function f, left and right endpoints a = -1, b = 1</span>
-<span class="comment">%       with n = 1e4 trials; returns cell arrays X and Y. The first rows </span>
-<span class="comment">%       X{1,:} and Y{1,:} contain the accepted x- and y-values,</span>
-<span class="comment">%       respectively. The second rows X{2,:} and Y{2,:} contain the</span>
-<span class="comment">%       rejected values.</span>
+<span class="comment">%       with n = 1e4 trials; returns numerical array A containing the</span>
+<span class="comment">%       accepted X-values (i.e., the values of the random variable with</span>
+<span class="comment">%       density function f).</span>
+<span class="comment">%   ------------------------------------------------------------------</span>
+<span class="comment">%</span>
+<span class="comment">%       f = @(x) 6 * x.^2 .* (1-x).^2;</span>
+<span class="comment">%       [A,Xc,Yc] = acceptReject(f, -1, 1, 1e4);</span>
+<span class="comment">%</span>
+<span class="comment">%       The optional output arguments Xc and Yc return cell arrays:</span>
+<span class="comment">%       The first rows Xc{1,:} and Yc{1,:} contain the accepted x- and </span>
+<span class="comment">%       y-values, respectively. The second rows Xc{2,:} and Yc{2,:} contain</span>
+<span class="comment">%       the rejected values.</span>
+<span class="comment">%   ------------------------------------------------------------------</span>
+<span class="comment">%</span>
+<span class="comment">%       A = acceptReject(f, -1, 1, 1e4,'plot');</span>
+<span class="comment">%</span>
+<span class="comment">%       The optional input string 'plot' returns a histogram comparing the</span>
+<span class="comment">%       produced values with the actual user-specified density.</span>
 
 <span class="comment">% Scale density function to appropriate size.</span>
 I = integral(fun,a,b); 
@@ -97,21 +111,35 @@ Xc = {T(TEST); <span class="keyword">...</span><span class="comment">       % ro
       T(~TEST)};         <span class="comment">% row 2 &lt;- rejected X values</span>
                               
 Yc = {U(TEST).*c; <span class="keyword">...</span><span class="comment">    % row 1 &lt;- accepted Y values</span>
-      U(~TEST).*c};      <span class="comment">% row 2 &lt;- rejected Y values  </span>
+      U(~TEST).*c};      <span class="comment">% row 2 &lt;- rejected Y values</span>
+
+A = Xc{1,:};             <span class="comment">% accepted X values as num array</span>
+
+<span class="comment">% Report accepted/rejected data if requested.</span>
+varargout{1} = Xc;   varargout{2} = Yc;
+
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  </span>
+<span class="comment">% Optional Routines</span>
+<span class="keyword">if</span> ~isempty(varargin)
+    <span class="keyword">switch</span> varargin{1}
+        <span class="keyword">case</span> <span class="string">'plot'</span>     <span class="comment">% Plotting routine</span>
+            acceptRejectPlot(fun,a,b,Xc,Yc)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
 
 </pre><p><b>acceptRejectPlot.m</b></p><pre class="language-matlab">
 <span class="keyword">function</span> acceptRejectPlot(fun,a,b,Xc,Yc)
-<span class="comment">% ACCEPTREJECTPLOT  Plots results from acceptReject output.</span>
+<span class="comment">% ACCEPTREJECTPLOT  Plots results from acceptReject.</span>
 <span class="comment">%</span>
 <span class="comment">%   Example:</span>
 <span class="comment">%       f = @(x) 6 * x.^2 .* (1-x).^2;</span>
-<span class="comment">%       [X,Y] = acceptReject(f,-1,1,1e4);</span>
+<span class="comment">%       [A,Xc,Yc] = acceptReject(f,-1,1,1e4);</span>
 <span class="comment">%</span>
-<span class="comment">%       acceptRejectPlot(f, -1, 1, X, Y);</span>
+<span class="comment">%       acceptRejectPlot(f, -1, 1, Xc, Yc);</span>
 <span class="comment">%</span>
-<span class="comment">%       This plots the approximate density using the histogram of X and the</span>
-<span class="comment">%       actual density f. A second plot contains some sample accept/reject</span>
-<span class="comment">%       points.</span>
+<span class="comment">%       This plots the approximate density using the histogram of Xc and </span>
+<span class="comment">%       the actual density f. A second plot contains some sample </span>
+<span class="comment">%       accept/reject points.</span>
 
 <span class="comment">% Recover data</span>
 I = integral(fun,a,b); 
@@ -156,7 +184,44 @@ plot(x,f(x),<span class="string">'r--'</span>,<span class="string">'LineWidth'</
 xlabel(<span class="string">'x'</span>); ylabel(<span class="string">'f(x)'</span>); title(<span class="string">'Accept/Reject Method'</span>);
 set(approx,<span class="string">'FaceColor'</span>,[1 1 1],<span class="string">'LineWidth'</span>,2);
 
-</pre><h2>Example with the Beta Density<a name="15"></a></h2><p>Lets take a look at how these functions work using the beta density with a = 6 and b = 2</p><p>setting up a, b and beta(u)</p><pre class="codeinput">a = 6;
+</pre><p><b>randPDF.m</b></p><pre class="language-matlab">
+<span class="keyword">function</span> [x] = randPDF( fun, a, b, n)
+<span class="comment">%Generate  1 x n  a vectorof random numbers following the distribution of a</span>
+<span class="comment">%Given PDF.</span>
+<span class="comment">%   Output:</span>
+<span class="comment">%   x: 1 x n vector of random numbers following the distribution of fun</span>
+<span class="comment">%   Input:</span>
+<span class="comment">%   fun: a PDF function with compact support over [a,b]</span>
+<span class="comment">%   a: the lower bound for the support of fun</span>
+<span class="comment">%   b: the upper bound for the support of fun</span>
+<span class="comment">%   n: the desired number of random values</span>
+
+x = zeros(1,n); <span class="comment">% placeholder for generated numbers</span>
+filled = 0; <span class="comment">% keeping track of the accepted values</span>
+
+<span class="comment">% find ratio of area beneather pdf to box size</span>
+I = integral(fun,a,b);
+f = @(x) (1/I)*fun(x);
+c = max([f(a),f(b),f(fminbnd(@(x) -f(x),a,b))]);     <span class="comment">% locate maximum</span>
+boxsize = ceil(c*(b-a));
+
+
+filled = 1;
+oldfill = 1;
+x = zeros(1,n);
+<span class="keyword">while</span> filled &lt; n 
+    A = acceptReject(f,a,b, ((n - filled)*boxsize));
+    oldfill = filled;
+    filled = filled + length(A);
+    <span class="keyword">if</span> filled &lt;= n
+        x(1,oldfill:filled-1) = A;
+    <span class="keyword">else</span>
+        x(1,oldfill:n) = A(1:n-oldfill+1);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+</pre><h2>Example of the inside work with the Beta Density<a name="19"></a></h2><p>Lets take a look at how these functions work using the beta density with a = 6 and b = 2</p><p>setting up a, b and beta(u)</p><pre class="codeinput">a = 6;
 b = 2;
 beta = @(u) gamma(a+b)/(gamma(a)*gamma(b)) * u.^(a-1) .* (1-u).^(b-1);
 </pre><p>Plotting to see the pdf</p><pre class="codeinput">x = linspace(0,1,1000);
@@ -168,11 +233,17 @@ plot(x,beta(x))
 xlabel(<span class="string">'u'</span>)
 ylabel(<span class="string">'f(u)'</span>)
 hold <span class="string">off</span>
-</pre><img vspace="5" hspace="5" src="acceptrejectpaper_01.png" style="width:560px;height:420px;" alt=""> <p>Now lets test out the functions for 10,000 points</p><pre class="codeinput">[Xc, Yc] = acceptReject(beta,0,1,10000);
+</pre><img vspace="5" hspace="5" src="acceptrejectpaper_01.png" style="width:560px;height:420px;" alt=""> <p>Now lets test out the functions for 10,000 points</p><pre class="codeinput">[A] = acceptReject(beta,0,1,10000,<span class="string">'plot'</span>);
+</pre><img vspace="5" hspace="5" src="acceptrejectpaper_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="acceptrejectpaper_03.png" style="width:560px;height:420px;" alt=""> <h2>Example 10000 points with density of the Beta distribution<a name="23"></a></h2><p>All random number generators out there work in the following manner, a type of random number is chosen via which rand function is used (<tt>rand</tt>, <tt>randi</tt>, ...) and then the user specifies how they want that data returned, a vector, a single random number or a matrix.</p><p>randPDF works much in the same manner, though with slightly limmited functionality at this time. given a function a range and a number of points to be returned randPDF generates that number of points required from the density given.</p><p>lets try it out using the beta density above and grabbing 10000 points.</p><pre class="codeinput">n = 10000;
 
-acceptRejectPlot(beta,0,1,Xc,Yc);
-</pre><img vspace="5" hspace="5" src="acceptrejectpaper_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="acceptrejectpaper_03.png" style="width:560px;height:420px;" alt=""> <p>To get the pseudo random numbers generated from acceptReject use the following:</p><pre class="codeinput">xrandom = Xc{1,:};
-</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+x = randPDF(beta, 0, 1, n);
+
+figure
+hold <span class="string">on</span>
+title(<span class="string">'histogram of 10000 points generated from a beta density'</span>)
+histogram(x,50)
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="acceptrejectpaper_04.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% The Accept-Reject Method: Anthony Gusman, Nicholas Sullivan
 
@@ -201,19 +272,21 @@ acceptRejectPlot(beta,0,1,Xc,Yc);
 
 
 %% The Functions
-% We provide two functions in this paper, |acceptReject.m| and
-% |acceptRejectPlot.m| with the following outputs and arguments:
+% We provide three functions in this paper, |acceptReject.m|, 
+% |acceptRejectPlot.m| and |randPDF.m| with the following outputs and arguments:
 %%
-% |[Xc,Yc] = acceptReject(f,a,b,n)|
+% |[A,varargout] = acceptReject(fun,a,b,n,varargin)|
 %%
-% * *Output:* [X,Y], random numbers defined as above each split into a cell with the first
-% row as the accepted values and the second row as the rejected values.
-% * *Input:* f, PDF function $f_X$
-% * a, lower bound of f's domain
-% * b, upper bound of f's domain
+% * *Output:* numerical array A containing the accepted X-values (i.e., the
+% values of the random variable with  density function f).
+% * *Input:* fun, PDF function $f_X$
+% * a, lower bound of fun's domain
+% * b, upper bound of fun's domain
 % * n, number of $(x_i, y_i)$ pairs (increase this for higher accuracy)
+% * The optional input string 'plot' returns a histogram comparing the
+% produced values with the actual user-specified density. 
 %%
-% |acceptRejectPlot(fun,a,b,X,Y)|
+% |acceptRejectPlot(fun,a,b,Xc,Yc)|
 %%
 % * *Output:* plots, one of the pdf with a histogram of the accepted values
 % generated and one of the pdf along with accepted and rejected points.
@@ -222,8 +295,16 @@ acceptRejectPlot(beta,0,1,Xc,Yc);
 % * b, upper bound of fun's domain
 % * X, the X returned by |acceptReject|
 % * Y, the Y returned by |acceptReject|
+% *Note:* This will have little use aside from its call by |acceptReject.m|
+%%
+% |[x] = randPDF( fun, a, b, n)|
+%%
+% * *Output:* a 1xn vector of random values with density provided by fun
+% * *Input:* fun, PDF function $f_X$
+% * a, lower bound of fun's domain
+% * b, upper bound of fun's domain
 %% Accept Reject and Plotter function code
-% here is the full code of both functions with comments and syntax high
+% here is the full code of all functions with comments and syntax high
 % lighting:
 %%
 % *acceptReject.m*
@@ -233,9 +314,13 @@ acceptRejectPlot(beta,0,1,Xc,Yc);
 % *acceptRejectPlot.m*
 %%
 % <include>acceptRejectPlot.m</include>
+%% 
+% *randPDF.m*
+%%
+% <include>randPDF.m</include>
 
 
-%% Example with the Beta Density
+%% Example of the inside work with the Beta Density
 % Lets take a look at how these functions work using the beta density with
 % a = 6 and b = 2
 % 
@@ -259,14 +344,29 @@ ylabel('f(u)')
 hold off
 %%
 % Now lets test out the functions for 10,000 points
-[Xc, Yc] = acceptReject(beta,0,1,10000);
+[A] = acceptReject(beta,0,1,10000,'plot');
 
-acceptRejectPlot(beta,0,1,Xc,Yc);
+%% Example 10000 points with density of the Beta distribution
+% All random number generators out there work in the following manner, a
+% type of random number is chosen via which rand function is used (|rand|,
+% |randi|, ...) and then the user specifies how they want that data
+% returned, a vector, a single random number or a matrix.
+%
+% randPDF works much in the same manner, though with slightly limmited
+% functionality at this time. given a function a range and a number of
+% points to be returned randPDF generates that number of points required
+% from the density given.
+%
+% lets try it out using the beta density above and grabbing 10000 points.
 
-%%
-% To get the pseudo random numbers generated from acceptReject use the
-% following:
-xrandom = Xc{1,:};
+n = 10000;
 
+x = randPDF(beta, 0, 1, n);
+
+figure
+hold on
+title('histogram of 10000 points generated from a beta density')
+histogram(x,50)
+hold off
 ##### SOURCE END #####
 --></body></html>
