@@ -1,15 +1,15 @@
 function acceptRejectPlot(fun,a,b,Xc,Yc)
-% ACCEPTREJECTPLOT  Plots results from acceptReject output.
+% ACCEPTREJECTPLOT  Plots results from acceptReject.
 %
 %   Example:
 %       f = @(x) 6 * x.^2 .* (1-x).^2;
-%       [X,Y] = acceptReject(f,-1,1,1e4);
+%       [A,Xc,Yc] = acceptReject(f,-1,1,1e4);
 %
-%       acceptRejectPlot(f, -1, 1, X, Y);
+%       acceptRejectPlot(f, -1, 1, Xc, Yc);
 %
-%       This plots the approximate density using the histogram of X and the
-%       actual density f. A second plot contains some sample accept/reject
-%       points.
+%       This plots the approximate density using the histogram of Xc and 
+%       the actual density f. A second plot contains some sample 
+%       accept/reject points.
 
 % Recover data
 I = integral(fun,a,b); 
